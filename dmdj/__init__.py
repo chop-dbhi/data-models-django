@@ -39,8 +39,8 @@ url = get_url('{name}', '{version}')
 
 model_json = requests.get(url).json()
 
-model = make_model(model_json, (Model,), 'dmdj.{name}_{version}',
-                   '{name}_{version}')
+model = make_model(model_json, (Model,), 'dmdj.{name}.{version}',
+                   'dmdj_{name}_{version}')
 
 for table in model:
     globals()[table.__name__] = table
@@ -48,18 +48,26 @@ for table in model:
 
 for model in MODELS:
 
+    path = 'dmdj.' + model['name']
+    module = imp.new_module(path)
+    module.__file__ = '(dynamically constructed)'
+    module.__dict__['__package__'] = 'dmdj'
+    locals()[model['name']] = module
+    sys.modules[path] = module
+
     for version in model['versions']:
 
         version_name = 'v' + version['name'].replace('.', '_')
-        path = 'dmdj.' + model['name'] + '_' + version_name
-        module = imp.new_module(path)
-        module.__file__ = '(dynamically constructed)'
-        module.__dict__['__package__'] = 'dmdj'
-        locals()[model['name']] = module
+        version_path = path + '.' + version_name
+
+        version_module = imp.new_module(version_path)
+        version_module.__file__ = '(dynamically constructed)'
+        version_module.__dict__['__package__'] = 'dmdj'
+        setattr(module, version_name, version_module)
 
         code = version_module_code.format(name=model['name'],
                                           version=version['name'])
 
-        exec(code, module.__dict__)
+        exec(code, version_module.__dict__)
 
-        sys.modules[path] = module
+        sys.modules[version_path] = version_module
