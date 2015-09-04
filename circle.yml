@@ -1,0 +1,20 @@
+machine:
+  services:
+    - docker
+  python:
+    version: 2.7.3
+  environment:
+    BUILD_NUM: "${CIRCLE_BUILD_NUM}"
+    COMMIT_SHA1: "${CIRCLE_SHA1}"
+    BRANCH: "${CIRCLE_BRANCH}"
+
+test:
+  override:
+    - nosetests
+
+deployment:
+  pypi:
+    branch: master
+    commands:
+      - pip install wheel twine
+      - ./ci/deploy.sh
