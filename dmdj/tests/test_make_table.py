@@ -1,11 +1,8 @@
 from __future__ import unicode_literals
 
-import os
 from nose.tools import eq_, ok_
 from django.db.models import Model, ForeignKey
 from dmdj.makers import make_table
-
-os.environ['DJANGO_SETTINGS_MODULE'] = 'dmdj.settings'
 
 
 def test_class_name():

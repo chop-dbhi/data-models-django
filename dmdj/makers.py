@@ -1,9 +1,13 @@
 from __future__ import unicode_literals
 
 from copy import copy
+from django.conf import settings
 from django.db.models import (IntegerField, DecimalField, CharField, DateField,
                               DateTimeField, ForeignKey, TextField, FloatField,
                               TimeField, BooleanField, BinaryField)
+
+if not settings.configured:
+    settings.configure()
 
 FIELD_TYPE_MAP = {
     'integer': IntegerField,

@@ -49,6 +49,3 @@ def get_url(model, version):
             for v in m['versions']:
                 if v['name'] == version:
                     return v['url']
-
-# Required for testing
-SECRET_KEY = 'abc123'

@@ -1,13 +1,10 @@
 from __future__ import unicode_literals
 
-import os
 from nose.tools import ok_, eq_
 from django.db.models import (IntegerField, DecimalField, CharField, DateField,
                               DateTimeField, ForeignKey, TextField, FloatField,
                               TimeField, BooleanField, BinaryField)
 from dmdj.makers import make_field
-
-os.environ['DJANGO_SETTINGS_MODULE'] = 'dmdj.settings'
 
 
 def test_types():

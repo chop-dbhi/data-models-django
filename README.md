@@ -1,51 +1,40 @@
-# PEDSnetCDMs
+# Data Models Django
 
-A python app for CDM model classes and DDL autogeneration.
+[![Circle CI](https://circleci.com/gh/chop-dbhi/data-models-django/tree/master.svg?style=svg)](https://circleci.com/gh/chop-dbhi/data-models-django/tree/master)
 
-The pedsnetcdms app creates python-importable sqlalchemy AND django style models for PEDSnet, Vocab, I2B2, and PCORnet CDMs. In addition, alembic AND django migrations can be created from those models. The alembic migrations can be used to auto-generate DDL files for all four CDMs.
+Django models for [chop-dbhi/data-models-service](https://github.com/chop-dbhi/data-models-service) style JSON endpoints.
 
-The pedsnetcdms app is based on the declarative definition of models in JSON format (found in the `models.json` files) and the dynamic generation of python classes from those models (found in the `dj_makers.py` and `sa_makers.py` files). The generating functions are used in each CDM's `models.py` and `sa_models.py` files to put the model classes where the ORMs can find them. The `settings.py`, `alembic.ini`, and `alembic/env.py` files are simply ORM module configuration.
+## Django Model Usage
 
-## Installation
+In your shell, hopefully within a virtualenv:
 
-A `pip install pedsnetcdms` should get you the package with the generated models and migrations ready for import into your python environment.
+```sh
+pip install dmdj
+```
 
-However, if you want to generate the DDLs yourself or use the migrations directly on your database, you will have to clone the repository and install some or all of the following python packages and their (in some cases non-Python) dependencies, depending on which DBMS you are using:
+In python:
 
-- cx-Oracle
-- psycopg2
-- pymssql
-- MySQL-python
+```python
+from dmdj.omop.v5_0_0.models import Person
 
-This is left as an exercise for the reader. (Although perhaps a Dockerfile is in order...PR anyone?)
+print Person._meta.fields
+```
 
-## DDL Files
+These models are dynamically generated at runtime from JSON endpoints provided by chop-dbhi/data-models-service, which reads data stored in chop-dbhi/data-models. Each data model version available on the service is included in a dynamically generated python module. At the time of writing, the following are available. Any added to the service will use the same naming conventions.
 
-DDL files for all four CDMs in PostgreSQL, Oracle, SQL Server, and MySQL dialects are available in the `pedsnetcdms/ddloutput` directory. They are hypothetical, so please test them and post an issue if you find a problem.
+- **OMOP V4** at `omop.v4_0_0.models`
+- **OMOP V5** at `omop.v5_0_0.models`
+- **PEDSnet V1** at `pedsnet.v1_0_0.models`
+- **PEDSnet V2** at `pedsnet.v2_0_0.models`
+- **i2b2 V1.7** at `i2b2.v1_7_0.models`
+- **i2b2 PEDSnet V2** at `i2b2_pedsnet.v2_0_0.models`
+- **PCORnet V1** at `pcornet.v1_0_0.models`
+- **PCORnet V2** at `pcornet.v2_0_0.models`
+- **PCORnet V3** at `pcornet.v3_0_0.models`
 
-## Model Usage
+### Caveats
 
-Django models are available at `pedsnetcdms.<CDM>.models` and sqlalchemy models are available at `pedsnetcdms.<CDM>.sa_models`, where `<CDM>` should be replaced with one of the following:
-
-- pedsnetcdm
-- itwobtwocdm
-- vocabcdm
-- pcornetcdm
-
-You can also include any of these apps in your django `INSTALLED_APPS` setting.
-
-## DDL Generation
-
-In order to generate the DDL, install the required package(s) for your DBMS(s) from the list above, clone the repository and install the package.
-
-Edit the `pedsnetcdms/<CDM>/alembic/env.py` file for your desired CDMs to restrict the DBMSs for which DDL will be output (hint: the iterated list of tuples inside the `run_migrations_offline` function).
-
-From within the `pedsnetcdms` package directory (where the `alembic.ini` file is), run `alembic -n <CDM> upgrade head --sql` and watch your DDL files appear!
-
-## Direct Migration Use
-
-Install requirements, clone, and install the package as above.
-
-Edit the `alembic.ini` or `settings.py` files to specify the database URI you wish to connect to (notice that the setting is repeated under each CDMs section in `alembic.ini`).
-
-Run `alembic -n <CDM> upgrade head` or `python manage.py migrate <CDM>`.
+- This package is **not** a Django "app" and it cannot be included in your Django project `INSTALLED_APPS`. Neither can any of the dynamically created modules (like `pedsnet.v2_0_0`).
+- The models are associated with a fictional Django `app_label` when they are dynamically created, so they will not be included in any Django sql output or migration commands. If you would like to explicitly include the models in your app or project, use code similar to the `version_module_code` code block in the [`dmdj/__init__.py`](dmdj/__init__.py) file to re-generate models with your app's `app_label` at runtime.
+- The models are dynamically generated and may change over time, although efforts to improve the semantic versioning and stability practices in the data-models repo are under way.
+- No attempt is made to provide migrations for any changes that do occur over time.
