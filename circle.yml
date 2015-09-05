@@ -1,6 +1,4 @@
 machine:
-  services:
-    - docker
   python:
     version: 2.7.3
   environment:
@@ -14,7 +12,7 @@ test:
   override:
     - nosetests --with-coverage --cover-package=dmdj --cover-html --cover-html-dir="${CIRCLE_ARTIFACTS}"
   post:
-    - coverage
+    - coveralls
 
 deployment:
   pypi:
