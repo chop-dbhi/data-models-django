@@ -18,7 +18,7 @@ if [ ${#VERSION} -lt 6 ]; then
     pip install wheel twine
     sed -e "s/<PYPI_USER>/${PYPI_USER}/" \
         -e "s/<PYPI_PASS>/${PYPI_PASS}/" \
-        < "${DIRNAME}/.pypirc.template" > .pypirc
+        < "${DIRNAME}/.pypirc.template" > "${HOME}/.pypirc"
     python setup.py register
     python setup.py sdist bdist_wheel
     twine upload -u "${PYPI_USER}" -p "${PYPI_PASS}" dist/*

@@ -6,9 +6,11 @@ machine:
     COMMIT_SHA1: "${CIRCLE_SHA1}"
     BRANCH: "${CIRCLE_BRANCH}"
 
-test:
-  pre:
+dependencies:
+  post:
     - pip install coveralls
+
+test:
   override:
     - nosetests --with-coverage --cover-package=dmdj --cover-html --cover-html-dir="${CIRCLE_ARTIFACTS}"
   post:
