@@ -15,6 +15,7 @@ if [ ${#VERSION} -lt 6 ]; then
     git push --tags
 
     echo "Uploading package to PyPi."
+    pip install wheel twine
     sed -e "s/<PYPI_USER>/${PYPI_USER}/" \
         -e "s/<PYPI_PASS>/${PYPI_PASS}/" \
         < "${DIRNAME}/.pypirc.template" > .pypirc

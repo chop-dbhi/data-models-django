@@ -9,12 +9,15 @@ machine:
     BRANCH: "${CIRCLE_BRANCH}"
 
 test:
+  pre:
+    - pip install coverage
   override:
-    - nosetests
+    - nosetests --with-coverage --cover-package=dmdj --cover-html --cover-html-dir="${CIRCLE_ARTIFACTS}"
+  post:
+    - coverage
 
 deployment:
   pypi:
     branch: master
     commands:
-      - pip install wheel twine
       - ./ci/deploy.sh
