@@ -1,6 +1,6 @@
 # Data Models Django
 
-[![Circle CI](https://circleci.com/gh/chop-dbhi/data-models-django/tree/master.svg?style=svg)](https://circleci.com/gh/chop-dbhi/data-models-django/tree/master)
+[![Circle CI](https://circleci.com/gh/chop-dbhi/data-models-django/tree/master.svg?style=svg)](https://circleci.com/gh/chop-dbhi/data-models-django/tree/master) [![Coverage Status](https://coveralls.io/repos/chop-dbhi/data-models-django/badge.svg?branch=master&service=github)](https://coveralls.io/github/chop-dbhi/data-models-django?branch=master)
 
 Django models for [chop-dbhi/data-models-service](https://github.com/chop-dbhi/data-models-service) style JSON endpoints.
 
