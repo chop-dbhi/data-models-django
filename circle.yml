@@ -12,7 +12,8 @@ dependencies:
 
 test:
   override:
-    - nosetests --with-coverage --cover-package=dmdj --cover-html --cover-html-dir="${CIRCLE_ARTIFACTS}"
+    - nosetests --with-coverage --cover-package=dmdj --cover-html
+      --cover-html-dir="${CIRCLE_ARTIFACTS}"
   post:
     - coveralls
 

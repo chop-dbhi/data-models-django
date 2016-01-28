@@ -80,6 +80,8 @@ def make_field(field_json, constraints, indexes):
     if constraints.get('primary_keys') and \
             len(constraints['primary_keys'][0]['fields']) == 1:
         kwargs['primary_key'] = True
+        kwargs.pop('max_digits', None)
+        kwargs.pop('decimal_places', None)
 
     if constraints.get('uniques') and \
             len(constraints['uniques'][0]['fields']) == 1:
@@ -101,6 +103,8 @@ def make_field(field_json, constraints, indexes):
 
         args.append(target_model_name)
 
+        kwargs.pop('max_digits', None)
+        kwargs.pop('decimal_places', None)
         kwargs['to_field'] = fkey_json['target_field']
         kwargs['related_name'] = '%s_%s_set' % (fkey_json['source_table'],
                                                 fkey_json['source_field'])
