@@ -9,9 +9,9 @@ ver := $(shell GIT_SHA=$(GIT_SHA) python -c \
 # Set of object files to watch for changes.
 objects = $(wildcard dmdj/*.py)
 # Wheel dist file.
-wheel_dist := dist/dmdj-$(ver)-py2.py3-none-any.whl
+dist := dist/dmdj-$(ver)-py2.py3-none-any.whl
 # Source dist file.
-src_dist := dist/dmdj-$(ver).tar.gz
+tar := dist/dmdj-$(ver).tar.gz
 # Set up for twine upload command.
 ifdef PYPI_USER
 user_arg := -u "$(PYPI_USER)"
@@ -20,24 +20,24 @@ ifdef PYPI_PASS
 pass_arg := -p "$(PYPI_PASS)"
 endif
 
-all: install
+all: build
 
 install: .make/dmdj
 
-.make/dmdj: $(wheel_dist) $(objects)
-	pip install -I $(wheel_dist)
+.make/dmdj: $(dist) $(objects)
+	pip install -I $(dist)
 	@ touch .make/dmdj
 
-build: $(wheel_dist) $(src_dist)
+build: dist tar
 
-build-wheel: $(wheel_dist)
+dist: $(dist)
 
-build-src: $(src_dist)
+tar: $(tar)
 
-$(wheel_dist): $(objects) .make/wheel
+$(dist): $(objects) .make/wheel
 	python setup.py bdist_wheel --universal
 
-$(src_dist): $(objects)
+$(tar): $(objects)
 	python setup.py sdist
 
 build-install: .make/wheel
@@ -55,7 +55,7 @@ ifneq ($(strip $(shell printf $(ver) | wc -c)), 5)
 endif
 
 test: .make/tox .make/pytest
-	tox
+	tox dmdj
 
 test-install: .make/tox .make/pytest
 
@@ -65,13 +65,14 @@ coveralls: guard-COVERALLS_REPO_TOKEN .make/coveralls coverage.xml
 coveralls-install: .make/coveralls
 
 coverage: .make/pytest-cov
-	pytest --cov-report=term-missing --cov-report=xml --cov-report=html --cov=dmdj
+	pytest --cov-report=term-missing --cov-report=xml --cov-report=html \
+		--cov=dmdj dmdj
 
 coverage.xml: .make/pytest-cov $(objects)
-	pytest --cov-report=xml --cov=dmdj
+	pytest --cov-report=xml --cov=dmdj dmdj
 
 htmlcov: .make/pytest-cov $(objects)
-	pytest --cov-report=html --cov=dmdj
+	pytest --cov-report=html --cov=dmdj dmdj
 
 coverage-install: .make/pytest-cov
 

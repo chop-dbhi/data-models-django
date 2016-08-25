@@ -1,4 +1,6 @@
 machine:
+  python:
+    version: 3.5.0
   environment:
     GIT_SHA: "${CIRCLE_SHA1}"
     BUILD_NUM: "${CIRCLE_BUILD_NUM}"
@@ -7,9 +9,8 @@ machine:
 
 dependencies:
   override:
-    - make test-install
-    - make coveralls-install
-    - make release-install
+      - make install test-install coverage-install coveralls-install
+        release-install
 
 test:
   override:
