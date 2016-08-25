@@ -1,7 +1,7 @@
 import os
 
 serial = os.environ.get('BUILD_NUM') or '0'
-sha = os.environ.get('COMMIT_SHA1') or '0'
+sha = os.environ.get('GIT_SHA') or '0'
 if sha:
     sha = sha[0:8]
 

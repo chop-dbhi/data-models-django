@@ -1,24 +1,25 @@
 machine:
-  python:
-    version: 2.7.3
   environment:
+    GIT_SHA: "${CIRCLE_SHA1}"
     BUILD_NUM: "${CIRCLE_BUILD_NUM}"
-    COMMIT_SHA1: "${CIRCLE_SHA1}"
-    BRANCH: "${CIRCLE_BRANCH}"
+  post:
+    - pyenv global 3.5.0 3.4.3 2.7.10
 
 dependencies:
-  post:
-    - pip install coveralls
+  override:
+    - make test-install
+    - make coveralls-install
+    - make release-install
 
 test:
   override:
-    - nosetests --with-coverage --cover-package=dmdj --cover-html
-      --cover-html-dir="${CIRCLE_ARTIFACTS}"
+    - make test
   post:
-    - coveralls
+    - make coveralls
 
 deployment:
-  pypi:
+  master:
     branch: master
+    owner: chop-dbhi
     commands:
-      - ./ci/deploy.sh
+      - make release
