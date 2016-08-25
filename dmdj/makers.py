@@ -1,13 +1,17 @@
 from __future__ import unicode_literals
 
+import django
+
 from copy import copy
-from django.conf import settings
 from django.db.models import (IntegerField, DecimalField, CharField, DateField,
                               DateTimeField, ForeignKey, TextField, FloatField,
                               TimeField, BooleanField, BinaryField)
 
-if not settings.configured:
-    settings.configure()
+if not django.conf.settings.configured:
+    django.conf.settings.configure()
+
+if hasattr(django, 'setup'):
+    django.setup()
 
 FIELD_TYPE_MAP = {
     'integer': IntegerField,
@@ -66,7 +70,7 @@ def make_field(field_json, constraints, indexes):
 
     datatype = FIELD_TYPE_MAP[field_json['type']]
 
-    for k, v in field_json.iteritems():
+    for k, v in field_json.items():
         if v and k in FIELD_KWARGS_MAP:
             kwargs[FIELD_KWARGS_MAP[k]] = v
 
@@ -224,7 +228,7 @@ def make_table(table_json, constraints, indexes, bases, module, app_label):
 
         field_cons = {}
 
-        for con_type, con_list in constraints.iteritems():
+        for con_type, con_list in constraints.items():
 
             field_cons[con_type] = []
 
@@ -273,8 +277,7 @@ def make_model(data_model, bases, module, app_label):
 
         table_cons = {}
 
-        for con_type, con_list in data_model['schema']['constraints'].\
-                iteritems():
+        for con_type, con_list in data_model['schema']['constraints'].items():
 
             table_cons[con_type] = []
 
