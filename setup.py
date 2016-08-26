@@ -1,8 +1,6 @@
 import setuptools
 import sys
 
-from setuptools.command.test import test as TestCommand
-
 from dmdj import __version__
 
 if sys.version_info < (2, 7):
@@ -16,28 +14,6 @@ if sys.version_info >= (3, 6):
 
 with open('README.md') as f:
     long_description = f.read()
-
-
-class Tox(TestCommand):
-    user_options = [('tox-args=', 'a', "Arguments to pass to tox")]
-
-    def initialize_options(self):
-        super(Tox, self).initialize_options(self)
-        self.tox_args = None
-
-    def finalize_options(self):
-        super(Tox, self).finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        # Import here, because eggs aren't loaded before.
-        import tox
-        import shlex
-        args = self.tox_args
-        if args:
-            args = shlex.split(self.tox_args)
-        tox.cmdline(args=args)
 
 setuptools.setup(
     name='dmdj',
@@ -73,6 +49,5 @@ setuptools.setup(
     tests_require=[
         'tox',
         'pytest'
-    ],
-    cmdclass={'test': Tox}
+    ]
 )

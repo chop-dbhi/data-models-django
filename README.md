@@ -2,39 +2,90 @@
 
 [![Circle CI](https://circleci.com/gh/chop-dbhi/data-models-django/tree/master.svg?style=svg)](https://circleci.com/gh/chop-dbhi/data-models-django/tree/master) [![Coverage Status](https://coveralls.io/repos/chop-dbhi/data-models-django/badge.svg?branch=master&service=github)](https://coveralls.io/github/chop-dbhi/data-models-django?branch=master)
 
-Django models for [chop-dbhi/data-models-service](https://github.com/chop-dbhi/data-models-service) style JSON endpoints.
+Django model generator for [chop-dbhi/data-models-service](https://data-model-service.research.chop.edu) style JSON metadata.
 
-## Django Model Usage
+## Installation
 
-In your shell, hopefully within a virtualenv:
+If you're not using a Python virtual environment, please do. I prefer [pyenv](https://github.com/yyuu/pyenv) with [pyenv-virtualenv](https://github.com/yyuu/pyenv-virtualenv).
 
-```sh
+Get the most recent stable version:
+
+```
 pip install dmdj
 ```
 
-In python:
+Or build and install the (unstable) `HEAD` version:
 
-```python
-from dmdj.omop.v5_0_0.models import Person
-
-print Person._meta.fields
+```
+git clone https://github.com/chop-dbhi/data-models-django.git
+cd data-models-django
+make install
 ```
 
-These models are dynamically generated at runtime from JSON endpoints provided by chop-dbhi/data-models-service, which reads data stored in chop-dbhi/data-models. Each data model version available on the service is included in a dynamically generated python module. At the time of writing, the following are available. Any added to the service will use the same naming conventions.
+## Usage
 
-- **OMOP V4** at `omop.v4_0_0.models`
-- **OMOP V5** at `omop.v5_0_0.models`
-- **PEDSnet V1** at `pedsnet.v1_0_0.models`
-- **PEDSnet V2** at `pedsnet.v2_0_0.models`
-- **i2b2 V1.7** at `i2b2.v1_7_0.models`
-- **i2b2 PEDSnet V2** at `i2b2_pedsnet.v2_0_0.models`
-- **PCORnet V1** at `pcornet.v1_0_0.models`
-- **PCORnet V2** at `pcornet.v2_0_0.models`
-- **PCORnet V3** at `pcornet.v3_0_0.models`
+Place the following in your app's `models.py` file:
 
-### Caveats
+```python
+import requests
+from django.db import models
+from dmdj.settings import get_url
+from dmdj.makers import make_model
 
-- This package is **not** a Django "app" and it cannot be included in your Django project `INSTALLED_APPS`. Neither can any of the dynamically created modules (like `pedsnet.v2_0_0`).
-- The models are associated with a fictional Django `app_label` when they are dynamically created, so they will not be included in any Django sql output or migration commands. If you would like to explicitly include the models in your app or project, use code similar to the `version_module_code` code block in the [`dmdj/__init__.py`](dmdj/__init__.py) file to re-generate models with your app's `app_label` at runtime.
-- The models are dynamically generated and may change over time, although efforts to improve the semantic versioning and stability practices in the data-models repo are under way.
-- No attempt is made to provide migrations for any changes that do occur over time.
+model_url = get_url('pednet', '2.1.0')
+model_json = requests.get(model_url).json()
+
+for model in make_model(model_json, (models.Model,), module='yourapp.models',
+                        app_label='yourapp')
+    globals()[model.__name__] = model
+```
+
+This code causes a single web request at runtime, which may slow down your app's startup. Also, the models are dynamically generated and so may change over time, although efforts to improve the semantic versioning and stability practices in the data-models repo are under way.
+
+## Development
+
+### Installation
+
+Install the development requirements and the package in "editable" mode.
+
+```
+git clone https://github.com/chop-dbhi/data-models-django.git
+cd data-models-django
+make devinstall
+```
+
+### Testing
+
+Tests are run on the source code using `tox` to replicate them across the range of compatible `Django` and `Python` versions, for the `Python` versions you have available in your environment. I like to create a `dmdj` virtual environment from `3.5.x` and then use `pyenv local dmdj 3.4.x 2.7.x`
+
+```
+make test
+```
+
+### Coverage
+
+Generate test coverage information that prints in the terminal and creates HTML and XML format files.
+
+```
+make coverage
+```
+
+## Deployment
+
+These tasks are routinely handled by the CI/CD workflow, but I'll document them here anyway.
+
+### Coveralls
+
+Publish test coverage information to coveralls (the project must be registered and the token must be in the `COVERALLS_REPO_TOKEN` env var).
+
+```
+make coveralls
+```
+
+### Release
+
+Release a new final version by pushing a new tag to GitHub and uploading the dist files to PyPi (the project must be registered at PyPi and you must have PyPi credentials available or in the `PYPI_USER` and `PYPI_PASS` env vars).
+
+```
+make release
+```

@@ -9,14 +9,14 @@ machine:
 
 dependencies:
   override:
-      - make install test-install coverage-install coveralls-install
-        release-install
+      - make build devinstall
 
 test:
   override:
     - make test
   post:
-    - make coveralls
+    - make coverage coveralls
+    - mv htmlcov "${CIRCLE_ARTIFACTS}/"
 
 deployment:
   master:
