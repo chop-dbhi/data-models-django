@@ -2,21 +2,26 @@ machine:
   python:
     version: 3.5.0
   environment:
-    GIT_SHA: "${CIRCLE_SHA1}"
     BUILD_NUM: "${CIRCLE_BUILD_NUM}"
   post:
+    # Make multiple Python versions available for tox testing.
     - pyenv global 3.5.0 3.4.3 2.7.10
 
 dependencies:
+  cache_directories:
+    - .tox
   override:
-      - make build devinstall
+    # Deactivate the CircleCI venv so project is installed in penv venv.
+    - deactivate; make build devinstall
+    # Set up tox environments so they are cached across builds.
+    - tox --notest
 
 test:
   override:
     - make test
   post:
-    - make coverage coveralls
-    - mv htmlcov "${CIRCLE_ARTIFACTS}/"
+    # Deactivate the CircleCI venv so coverage is tested on the right install.
+    - deactivate; make coverage coveralls
 
 deployment:
   master:
