@@ -30,7 +30,7 @@ deployment:
     branch: master
     owner: chop-dbhi
     commands:
-        - git config user.name "${MAINTAINER_NAME}"
-        - git config user.email "${MAINTAINER_EMAIL}"
+        - git config --global user.name "${MAINTAINER_NAME}"
+        - git config --global user.email "${MAINTAINER_EMAIL}"
         # This will not do anything on a non-final version.
         - make release; true
