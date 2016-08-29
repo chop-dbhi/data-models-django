@@ -30,6 +30,9 @@ deployment:
     branch: master
     owner: chop-dbhi
     commands:
+        # Bizarre workaround to solve git authentication problems. See:
+        # https://discuss.circleci.com/t/bizarre-workaround-needed-for-github-deployment/5152
+        - git config --global -l
         - git config --global user.name "${MAINTAINER_NAME}"
         - git config --global user.email "${MAINTAINER_EMAIL}"
         # This will not do anything on a non-final version.
