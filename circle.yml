@@ -28,4 +28,5 @@ deployment:
     branch: master
     owner: chop-dbhi
     commands:
+        # This will not do anything on a non-final version.
         - make release; true
