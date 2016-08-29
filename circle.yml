@@ -28,4 +28,5 @@ deployment:
     branch: master
     owner: chop-dbhi
     commands:
-      - make release
+        - VERSION="$(./ci/version.sh)" if [ ${#VERSION} -lt 6 ]; then
+          make release; fi
