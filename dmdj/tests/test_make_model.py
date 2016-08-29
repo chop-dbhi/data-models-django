@@ -1,6 +1,3 @@
-from __future__ import unicode_literals
-
-from nose.tools import eq_, ok_
 from django.db.models import Model, ForeignKey
 from dmdj.makers import make_model
 
@@ -41,7 +38,7 @@ def test_pk():
 
     for table in model:
         if table.__name__ == 'TestTable1':
-            eq_(table._meta.pk.name, 'pk')
+            assert table._meta.pk.name == 'pk'
 
 
 def test_unique():
@@ -55,7 +52,7 @@ def test_unique():
         if table.__name__ == 'TestTable2':
             for field in table._meta.fields:
                 if field.name == 'integer':
-                    ok_(field.unique)
+                    assert field.unique
 
 
 def test_not_null():
@@ -69,7 +66,7 @@ def test_not_null():
         if table.__name__ == 'TestTable1':
             for field in table._meta.fields:
                 if field.name == 'string':
-                    ok_(not field.null)
+                    assert not field.null
 
 
 def test_index():
@@ -83,7 +80,7 @@ def test_index():
         if table.__name__ == 'TestTable2':
             for field in table._meta.fields:
                 if field.name == 'string':
-                    ok_(field.db_index)
+                    assert field.db_index
 
 
 def test_foreign_key():
@@ -98,5 +95,6 @@ def test_foreign_key():
             for field in table._meta.fields:
                 if field.name == 'integer':
                     assert isinstance(field, ForeignKey)
-                    eq_(field.to_fields[0], 'integer')
-                    eq_(field.related_query_name(), 'test_table_1_integer_set')
+                    assert field.to_fields[0] == 'integer'
+                    assert field.related_query_name() == \
+                        'test_table_1_integer_set'

@@ -1,6 +1,3 @@
-from __future__ import unicode_literals
-
-from nose.tools import eq_, ok_
 from django.db.models import Model, ForeignKey
 from dmdj.makers import make_table
 
@@ -14,7 +11,7 @@ def test_class_name():
     bases = (Model,)
     table = make_table(table_json, {}, [], bases, module,
                        app_label)
-    eq_(table.__name__, 'TestTable')
+    assert table.__name__ == 'TestTable'
 
 
 def test_module():
@@ -26,7 +23,7 @@ def test_module():
     bases = (Model,)
     table = make_table(table_json, {}, [], bases, module,
                        app_label)
-    eq_(table.__module__, 'dmdj.tests')
+    assert table.__module__ == 'dmdj.tests'
 
 
 def test_pk():
@@ -39,7 +36,7 @@ def test_pk():
     bases = (Model,)
     table = make_table(table_json, constraint_json, [], bases, module,
                        app_label)
-    eq_(table._meta.pk.name, 'integer')
+    assert table._meta.pk.name == 'integer'
 
 
 def test_no_pk():
@@ -50,7 +47,7 @@ def test_no_pk():
     app_label = 'dmdj'
     bases = (Model,)
     table = make_table(table_json, {}, [], bases, module, app_label)
-    eq_(table._meta.pk.name, 'id')
+    assert table._meta.pk.name == 'id'
 
 
 def test_multi_pk():
@@ -66,12 +63,12 @@ def test_multi_pk():
     table = make_table(table_json, constraint_json, [], bases, module,
                        app_label)
 
-    eq_(table._meta.pk.name, 'id')
-    eq_(table._meta.unique_together, (('int1', 'int2'),))
+    assert table._meta.pk.name == 'id'
+    assert table._meta.unique_together == (('int1', 'int2'),)
 
     for field in table._meta.fields:
         if field.name in ['int1', 'int2']:
-            ok_(not field.null)
+            assert not field.null
 
 
 def test_unique():
@@ -87,7 +84,7 @@ def test_unique():
 
     for field in table._meta.fields:
         if field.name == 'integer':
-            ok_(field.unique)
+            assert field.unique
 
 
 def test_not_null():
@@ -103,7 +100,7 @@ def test_not_null():
 
     for field in table._meta.fields:
         if field.name == 'integer':
-            ok_(not field.null)
+            assert not field.null
 
 
 def test_index():
@@ -119,7 +116,7 @@ def test_index():
 
     for field in table._meta.fields:
         if field.name == 'integer':
-            ok_(field.db_index)
+            assert field.db_index
 
 
 def test_foreign_key():
@@ -139,5 +136,5 @@ def test_foreign_key():
     for field in table._meta.fields:
         if field.name == 'integer':
             assert isinstance(field, ForeignKey)
-            eq_(field.to_fields[0], 'field')
-            eq_(field.related_query_name(), 'test_table_integer_set')
+            assert field.to_fields[0] == 'field'
+            assert field.related_query_name() == 'test_table_integer_set'
