@@ -2,6 +2,8 @@ machine:
   python:
     version: 3.5.0
   environment:
+    MAINTAINER_NAME: "Aaron Browne"
+    MAINTAINER_EMAIL: "aaron0browne@gmail.com"
     BUILD_NUM: "${CIRCLE_BUILD_NUM}"
   post:
     # Make multiple Python versions available for tox testing.
@@ -28,5 +30,7 @@ deployment:
     branch: master
     owner: chop-dbhi
     commands:
+        - git config user.name "${MAINTAINER_NAME}"
+        - git config user.email "${MAINTAINER_EMAIL}"
         # This will not do anything on a non-final version.
         - make release; true
