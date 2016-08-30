@@ -12,6 +12,7 @@ machine:
 dependencies:
   cache_directories:
     - .tox
+    - .pyenv
   override:
     # Deactivate the CircleCI venv so project is installed in penv venv.
     - deactivate; make build devinstall
@@ -31,7 +32,6 @@ deployment:
     owner: chop-dbhi
     commands:
         # Debug git config.
-        - git config -l
         - git config --global user.name "${MAINTAINER_NAME}"
         - git config --global user.email "${MAINTAINER_EMAIL}"
         # This will not do anything on a non-final version.
