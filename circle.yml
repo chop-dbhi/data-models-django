@@ -11,8 +11,8 @@ machine:
 
 dependencies:
   cache_directories:
-    - .tox
-    - .pyenv
+    - ".tox"
+    - "~/.pyenv"
   override:
     # Deactivate the CircleCI venv so project is installed in penv venv.
     - deactivate; make build devinstall

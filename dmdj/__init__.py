@@ -8,8 +8,8 @@ if sha:
 __version_info__ = {
     'major': 0,
     'minor': 4,
-    'micro': 0,
-    'releaselevel': 'final',
+    'micro': 1,
+    'releaselevel': 'beta',
     'serial': serial,
     'sha': sha
 }
