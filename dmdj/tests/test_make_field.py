@@ -1,7 +1,14 @@
+import django
 from django.db.models import (IntegerField, DecimalField, CharField, DateField,
                               DateTimeField, ForeignKey, TextField, FloatField,
                               TimeField, BooleanField, BinaryField)
 from dmdj.makers import make_field
+
+if not django.conf.settings.configured:
+    django.conf.settings.configure()
+
+if hasattr(django, 'setup'):
+    django.setup()
 
 
 def test_types():

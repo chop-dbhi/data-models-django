@@ -1,4 +1,11 @@
+import django
 from dmdj.makers import make_meta
+
+if not django.conf.settings.configured:
+    django.conf.settings.configure()
+
+if hasattr(django, 'setup'):
+    django.setup()
 
 
 def test_db_table():
