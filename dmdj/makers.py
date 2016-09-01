@@ -1,15 +1,7 @@
-import django
-
 from copy import copy
 from django.db.models import (IntegerField, DecimalField, CharField, DateField,
                               DateTimeField, ForeignKey, TextField, FloatField,
                               TimeField, BooleanField, BinaryField)
-
-if not django.conf.settings.configured:
-    django.conf.settings.configure()
-
-if hasattr(django, 'setup'):
-    django.setup()
 
 FIELD_TYPE_MAP = {
     'integer': IntegerField,

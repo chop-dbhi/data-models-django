@@ -1,5 +1,12 @@
+import django
 from django.db.models import Model, ForeignKey
 from dmdj.makers import make_table
+
+if not django.conf.settings.configured:
+    django.conf.settings.configure()
+
+if hasattr(django, 'setup'):
+    django.setup()
 
 
 def test_class_name():
